@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 import numpy as np
 
+
 def main():
     img1 = np.array([[1,1,1],[0,0,0]])
     img2 = np.array([[1,0,0],[0,0,1]])
