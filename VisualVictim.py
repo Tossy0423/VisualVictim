@@ -1,42 +1,3 @@
-# -*- coding:utf-8 -*-
-'''
-Detector Visual Victims V1
-===
-
-Overview
-
-## Dependency
-
-## Setup
-
-## Usage
-
-## Licence
-Copyright <2018> <Tanaka Shunya>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## Author
-Tanaka Shunya
-[GitHub]https://github.com/Tossy0423
-
-## Created day
-2018/12/16
-
-## References
-How to write README.md
-[online]https://karaage.hatenadiary.jp/entry/2018/01/19/073000
-
-The MIT License
-[online]https://opensource.org/licenses/MIT
-
-
-'''
-
 # ==========Import Modules==========#
 # OpenCV
 import cv2
@@ -63,16 +24,16 @@ print("----------Import Modules Clear----------")
 
 # ==========Define GlobalValue==========#
 ## Debug Switch
-#FLAG_DEBUG = 'ON'
-FLAG_DEBUG = 'OFF' #Competition Mode
+FLAG_DEBUG = 'ON'
+# FLAG_DEBUG = 'OFF' #Competition Mode
 
 # Debug Monitor
-#FLAG_DEBUG_MONITOR = 'ON'
-FLAG_DEBUG_MONITOR = 'OFF'
+FLAG_DEBUG_MONITOR = 'ON'
+# FLAG_DEBUG_MONITOR = 'OFF'
 
 ## SerialCom
-FLAG_SERIAL = 'ON'
-#FLAG_SERIAL = 'OFF'
+# FLAG_SERIAL = 'ON'
+FLAG_SERIAL = 'OFF'
 
 
 ## Detect Area Range
@@ -166,99 +127,6 @@ print("----------Define GlobalValue Clear----------")
 
 # ==========Define Function==========#
 
-## Serial Communication
-
-# Setting Serial Port
-SERIAL_PORT = '/dev/tty.usbmodem14123' #OS X
-#SERIAL_PORT = '/dev/ttyACM0' #Linux, RPi
-
-# Setting Bautrate
-SERIAL_BAURATE = 9600
-
-# Serial Port Open
-if FLAG_SERIAL == 'ON':
-    USBSerial = serial.Serial(SERIAL_PORT, SERIAL_BAURATE, timeout = 2)
-    print("SerialPort[%s]Open" % (SERIAL_PORT))
-    time.sleep(1)
-
-# Setting Serial Send
-# Data Preparation
-SNED_DATA_SIZE_BYTE = 1  #'H'(1) + VictimAdress(2)
-SendData_Hedder = 0x48
-SendDataCast = [0 for i in range(0, SNED_DATA_SIZE_BYTE)]  #ArrayInitialize(char)
-
-#int型データを格納する配列
-SEND_DATA_SIZE_INT = 4  #送信したいint型のデータ
-SendData = [0 for i in range(0, SEND_DATA_SIZE_INT)]  #ArrayInitialize(int)
-
-# To MCU Send Address
-ADDRESS_VICTIM_NONE = 0x0010
-ADDRESS_VICTIM_S = 0x0020
-ADDRESS_VICTIM_H = 0x0030
-ADDRESS_VICTIM_U = 0x0040
-
-
-
-# Setting Serial Receive
-#ヘッダー込みで計算すること
-RECEIVE_DATA_SIZE_BYTE = 5  #'H'(1) + Adress(1) + ColorNumber(1)
-ReceiveData = [0 for i in range(0, RECEIVE_DATA_SIZE_BYTE)]  #受信データをそのまま入れる,ArrayInitialize(unsigned int)
-
-#int型データを格納する配列
-RECEIVE_DATA_SIZE_INT = 3  #受信したいint型のデータ
-ReceiveDataCast = [0 for i in range(0, RECEIVE_DATA_SIZE_INT)]  #ArrayInitialize(int)
-
-def IntToChar(ImportData_int, ImportArray, ArrayNum):
-    #intからcharに変換
-    #1:変換したい数値,2:変換した数値を入れたい配列,3:入れたい配列番号
-    ImportArray[ArrayNum] = struct.pack('B', ImportData_int >> 8)  #HighBit
-    ImportArray[ArrayNum + 1] = struct.pack('B', ImportData_int & 255)  #LowBit
-
-def SerialSend(SendData, Size):
-    #USBシリアル経由でデータを送信
-    #1:送信したい配列(char),2:データサイズ
-    SendData[0] = SendData_Hedder
-    for i in range(0, Size):
-        print("[%d]=%s" % (i, SendData[i]))
-        USBSerial.write(SendData[i])
-    USBSerial.flush()
-    USBSerial.reset_output_buffer()
-
-def CharToInt(ImportArray, ArrayNum):
-    #1:変換した配列(char),2:配列番号
-    IntDataCast = [0, 0]
-    IntDataCast[0] = ord(ImportArray[ArrayNum])
-    IntDataCast[1] = ord(ImportArray[ArrayNum + 1])
-    #print('[%d]=%x [%d]=%x' % (ArrayNum, IntDataCast[0], ArrayNum+1,
-    #                           IntDataCast[1]))
-    return IntDataCast[0] << 8 | IntDataCast[1]
-
-def SerialReceive(Size):
-    #USBシリアル経由でデータを受信
-    #1:データサイズ
-    #USBSerial.in_waiting()
-    Data = [0 for i in range(0, Size)]  #格納配列初期化
-    Data = USBSerial.read(Size)  #バッファデータをコピー
-    USBSerial.reset_input_buffer()  #バッファデータリセット
-    #ヘッダー分を読み込む
-    if (Data[0] == 'H'):
-        return Data
-    else:  #ヘッダーが読み込まればければすべて0を返す("CharToInt"でのエラー回避のため)
-        #print('[ERROR]:NotReadHedder')
-        #time.sleep(0.1)
-        return Data
-
-def Serial_init():
-    SendData = [0 for i in range(0, SEND_DATA_SIZE_INT)]  #ArrayInitialize(int)
-    SendDataCast = [0 for i in range(0, SNED_DATA_SIZE_BYTE)]  #ArrayInitialize(char)
-    ReceiveDataCast = [0 for i in range(0, RECEIVE_DATA_SIZE_INT)]  #ArrayInitialize(int)
-    ReceiveData = [0 for i in range(0, RECEIVE_DATA_SIZE_BYTE)]  #受信データをそのまま入れる,ArrayInitialize(unsigned int)
-
-
-
-
-
-
 # TrackBar
 if (FLAG_DEBUG == 'ON') & (FLAG_DEBUG_MONITOR == 'ON'):
     TrackBarArray = [0 for i in range(0, 7)]
@@ -327,7 +195,7 @@ def LabelingProcess(ImportImg, LabelNumUpper, AreaMax, AreaMin):
 
 # Import Camera & Setting Device
 # Import Camera
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 # Setting Device
 # Prameta
@@ -494,9 +362,6 @@ while True:
 
             print("Detect S")
 
-            # Serial Set Data
-            SendData[0] = ADDRESS_VICTIM_S
-
             if (FLAG_DEBUG == 'ON') & (FLAG_DEBUG_MONITOR == 'ON'):
                 ## Set String
                 String_Victim = 'Victim: S, Area: %d' % (Result_victim_S[0])
@@ -505,8 +370,6 @@ while True:
 
             print("Detect H")
 
-            # Serial Set Data
-            SendData[0] = ADDRESS_VICTIM_H
 
             if (FLAG_DEBUG == 'ON') & (FLAG_DEBUG_MONITOR == 'ON'):
 
@@ -517,9 +380,6 @@ while True:
 
             print("Detect U")
 
-            # Serial Set Data
-            SendData[0] = ADDRESS_VICTIM_U
-
             if (FLAG_DEBUG == 'ON') & (FLAG_DEBUG_MONITOR == 'ON'):
 
                 ## Set String
@@ -529,8 +389,7 @@ while True:
 
             print("No Detect")
 
-            # Serial Set Data
-            SendData[0] = ADDRESS_VICTIM_NONE
+
 
             if (FLAG_DEBUG == 'ON') & (FLAG_DEBUG_MONITOR == 'ON'):
                 ## Set String
@@ -551,16 +410,6 @@ while True:
             # print("[DEBUG_H]Area=%d, Perimeter=%d, Roundness=%0.2f" % (Result_victim_H[0], Result_victim_H[1], Result_victim_H[2]))
             # print("[DEBUG_U]Area=%d, Perimeter=%d, Roundness=%0.2f" % (Result_victim_U[0], Result_victim_U[1], Result_victim_U[2]))
 
-    # Serial Send Preparation
-    #SendData[0] = ADDRESS_VICTIM_S
-    #IntToChar(SendData[0], SendDataCast, 1)
-
-    if FLAG_SERIAL == 'ON':
-        SerialSend(SendDataCast, SNED_DATA_SIZE_BYTE)
-
-
-
-    time.sleep(1)
 
     # Recode End Time
     END_TIME = time.time()
