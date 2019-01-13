@@ -1,10 +1,10 @@
 # Name
 
 VisualVictimDetector_v1<br>
-視覚的被災者検知システム_v1
+視覚的被災者検知システム_v1
 
 # Overview
-RoboCupJunior2017以降,RescueMazeでは熱源の被災者に加えて,視覚的被災者(VisualVictim)を検知しなければならないルールが追加された.視覚的被災者(以降VVとする)を検知する方法はいろいろあるが,本プログラムはwebカメラを用いて検知を行うものである. <br>
+RoboCupJunior2017以降,RescueMazeでは熱源の被災者に加えて,視覚的被災者(VisualVictim)を検知しなければならないルールが追加された.視覚的被災者(以降VVとする)を検知する方法はいろいろあるが,本プログラムはwebカメラを用いて検知を行うものである. <br>
 
 
 # Dependency
@@ -17,10 +17,10 @@ RoboCupJunior2017以降,RescueMazeでは熱源の被災者に加えて,視覚�
     <dd> 画像を処理するために使用 </dd>
     
 * time
-    <dd> プログラムの動作速度を計測するために使用. <br> デバッガとしても使っtた.</dd>
+    <dd> プログラムの動作速度を計測するために使用. <br> デバッガとしても使っtた.</dd>
 
 * numpy
-    <dd> OpenCVでは画像は2次元配列として扱うため使用.使った記憶はないがおまじない.
+    <dd> OpenCVでは画像は2次元配列として扱うため使用.使った記憶はないがおまじない.
 
 # Setup
 
@@ -28,7 +28,7 @@ RoboCupJunior2017以降,RescueMazeでは熱源の被災者に加えて,視覚�
 * PC <br>
     <dd> MacBook Pro (Retina, 13-inch, Early 2015), mojave(10.14.2) </dd>
 
-* WebCamera <br>
+* WebCamera <br>
     <dd> Logicool C270 </dd>
 
 * IDE <br>
@@ -38,11 +38,11 @@ RoboCupJunior2017以降,RescueMazeでは熱源の被災者に加えて,視覚�
 
 IDE(Pycharm)とPython3.7はすでにPCに入っているとする.
 
-1. C270とPCを接続する.
-2. 以降は動作目的に応じて変更してほしい.<br>
+1. C270とPCを接続する.
+2. 以降は動作目的に応じて変更してほしい.<br>
 
-## カメラ番号設定
-"x"には任意の数値を指定.PCが起動して認識した順番に番号が振り分けられる.
+## カメラ番号設定
+"x"には任意の数値を指定,PCが起動して認識した順番に番号が振り分けられる.
 PC内蔵webカメラと外部webカメラだと,だいたい0 or 1.
 
 > cap = cv2.VideoCapture(x)
