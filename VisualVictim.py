@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 # ==========Import Modules==========#
 # OpenCV
 import cv2
@@ -195,7 +197,7 @@ def LabelingProcess(ImportImg, LabelNumUpper, AreaMax, AreaMin):
 
 # Import Camera & Setting Device
 # Import Camera
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 # Setting Device
 # Prameta
