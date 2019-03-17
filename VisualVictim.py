@@ -197,7 +197,7 @@ def LabelingProcess(ImportImg, LabelNumUpper, AreaMax, AreaMin):
 
 # Import Camera & Setting Device
 # Import Camera
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 # Setting Device
 # Prameta
